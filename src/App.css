@@ -1,0 +1,19 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.layout {
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+.main-content {
+  margin-left: 6.3%;
+  width: 94%;
+  padding: 20px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
