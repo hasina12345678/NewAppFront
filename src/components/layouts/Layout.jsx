@@ -1,16 +1,21 @@
-import { useAuth } from '../../context/AuthContext';
 import Navbar from './Navbar';
 
-function Layout({ children }) {
-  const { isAuthenticated } = useAuth();
-
+function Layout({ children, panierCount, refreshCart }) {
+  const pathname = window.location.pathname;
+  const hideNavbar = pathname === '/admin';
+  
   return (
+
     <div className="layout">
-      {isAuthenticated() && <Navbar />}
+
+      {!hideNavbar && <Navbar panierCount={panierCount} refreshCart={refreshCart} />}
+
       <main className="main-content">
         {children}
       </main>
+
     </div>
+    
   );
 }
 

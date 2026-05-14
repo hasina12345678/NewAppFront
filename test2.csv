@@ -1,5 +1,0 @@
-id_client,nom,commandes_produits,commandes_quantites,commandes_prix,adresse_lignes,adresse_ville,telephones,est_fidele
-1,Dupont,['T-Shirt', 'Jean', 'Chaussures'],[2, 1, 1],[19.99, 49.99, 59.99],['10 rue de Paris', 'Appt 3B'],Lyon,['0612345678', '0698765432'],true
-2,Martin,"['Pull', 'Casquette']","[3, 2]","[39.99, 15.99]","['5 avenue des fleurs']",Marseille,"['0655544433']",false
-3,Petit,"['Lunettes', 'Sac', 'Ceinture', 'Gants']","[1, 2, 1, 2]","[89.99, 29.99, 24.99, 19.99]","['22 rue du marché', 'Résidence Bât A']",Paris,"['0677788899', '0611122233']",true
-4,Durand,"['Chemise']","[5]","[29.99]","['8 place centrale']",Bordeaux,"['0644455566']",false

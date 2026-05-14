@@ -48,7 +48,7 @@ export const saveShipping = async (shippingMethod) => {
 export const savePayment = async (paymentMethod) => {
   return fetchWithAuth(`${API_BASE}/save-payment`, {
     method: 'POST',
-    body: JSON.stringify({ payment: { method: paymentMethod } }),  // ✅
+    body: JSON.stringify({ payment: { method: paymentMethod } }),
   });
 };
 

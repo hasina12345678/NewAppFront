@@ -1,41 +1,41 @@
 import { useEffect, useState } from 'react';
 import { getOrders } from '../../services/serv_commandes';
+import CarteCommande from '../../components/CarteCommande';
 
-function ClientCommandes() {
-  const [commandes, setCommandes] = useState([]);
+function CommandesClient() {
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCommandes = async () => {
+    const loadOrders = async () => {
       try {
-        const data = await getOrders();
-        setCommandes(data.data || []);
-      } catch (error) {
-        console.error('Erreur:', error);
+        const response = await getOrders();
+        setOrders(response.data || []);
+      } catch (err) {
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
-    
-    fetchCommandes();
+    loadOrders();
   }, []);
 
   if (loading) return <div>Chargement...</div>;
 
   return (
-    <div>
+    <div style={{ padding: '20px' }}>
       <h1>Mes commandes</h1>
-      {commandes.length === 0 ? (
-        <p>Aucune commande</p>
-      ) : (
-        commandes.map(order => (
-          <div key={order.id}>
-            <p>Commande #{order.increment_id} - {order.status} - {order.formatted_grand_total}</p>
-          </div>
-        ))
-      )}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        {orders.map(order => (
+          <CarteCommande
+            key={order.id}
+            commande={order}
+            showActions={false}  // ← Pas d'actions pour le client
+          />
+        ))}
+      </div>
     </div>
   );
 }
 
-export default ClientCommandes;
+export default CommandesClient;

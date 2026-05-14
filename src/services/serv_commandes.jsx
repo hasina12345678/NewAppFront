@@ -2,7 +2,15 @@ const API_BASE = 'http://localhost:8000/api/v1/customer/orders';
 
 const getToken = () => sessionStorage.getItem('customer_token');
 
+const isCustomerLoggedIn = () => {
+  return sessionStorage.getItem('customer_token') !== null;
+};
+
 const fetchWithAuth = async (url, options = {}) => {
+  if (!isCustomerLoggedIn()) {
+    throw new Error('Utilisateur non connecté');
+  }
+  
   const response = await fetch(url, {
     ...options,
     headers: {
@@ -21,25 +29,25 @@ const fetchWithAuth = async (url, options = {}) => {
   return response.json();
 };
 
-// Récupérer toutes les commandes du client connecté
 const getOrders = async () => {
-  return fetchWithAuth(`${API_BASE}?pagination=0`);
+  if (!isCustomerLoggedIn()) return { data: [] };
+  return fetchWithAuth(`${API_BASE}`);
 };
 
-// Récupérer une commande par son ID
 const getOrderById = async (orderId) => {
+  if (!isCustomerLoggedIn()) throw new Error('Non connecté');
   return fetchWithAuth(`${API_BASE}/${orderId}`);
 };
 
-// Annuler une commande
 const cancelOrder = async (orderId) => {
+  if (!isCustomerLoggedIn()) throw new Error('Non connecté');
   return fetchWithAuth(`${API_BASE}/${orderId}/cancel`, {
     method: 'POST',
   });
 };
 
-// Re-commander (ajoute au panier les produits d'une commande précédente)
 const reorder = async (orderId) => {
+  if (!isCustomerLoggedIn()) throw new Error('Non connecté');
   return fetchWithAuth(`${API_BASE}/reorder/${orderId}`, {
     method: 'GET',
   });

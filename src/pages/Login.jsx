@@ -1,35 +1,35 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('admin@gmail.com');
+  const [password, setPassword] = useState('admin123');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
   const navigate = useNavigate();
-  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    try {
-      const result = await login(email, password);
-    } catch (err) {
-      setError(err.message || 'Échec de la connexion');
-    } finally {
-      setLoading(false);
+    if(email === "admin@gmail.com" && password === "admin123"){
+      sessionStorage.setItem('admin_logged_in', 'true'); 
+      // navigate('/admin/home');
+      window.location.href = '/admin/home';
+    } else {
+      setError('Email ou mot de passe incorrect');
     }
+    
+    setLoading(false);
   };
 
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2>Connexion</h2>
+        <h2>Connexion Admin</h2>
         {error && <div className="error-message">{error}</div>}
         
         <form onSubmit={handleSubmit}>
@@ -41,7 +41,7 @@ function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="exemple@email.com"
+              placeholder="admin@gmail.com"
             />
           </div>
 
@@ -53,7 +53,7 @@ function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="Votre mot de passe"
+              placeholder="admin123"
             />
           </div>
 
@@ -61,12 +61,6 @@ function Login() {
             {loading ? 'Connexion...' : 'Se connecter'}
           </button>
         </form>
-
-        <div className="login-footer">
-          <p>
-            Pas encore de compte ? <Link to="/register">S'inscrire</Link>
-          </p>
-        </div>
       </div>
     </div>
   );

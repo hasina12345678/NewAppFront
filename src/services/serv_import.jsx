@@ -1,5 +1,6 @@
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
+import JSZip from 'jszip';
 
 // Fonction 1 : CSV avec bibliothèque
 const importCSV = (file) => {
@@ -90,5 +91,24 @@ const parserLigne = (row) => {
   return newRow;
 };
 
+const extractZipFiles = async (file) => {
+  const zip = new JSZip();
+  const contents = await zip.loadAsync(file);
+  
+  const files = [];
+  
+  for (const [filename, zipEntry] of Object.entries(contents.files)) {
+    if (!zipEntry.dir && (filename.match(/\.(jpg|jpeg|png|gif|webp)$/i))) {
+      const imageData = await zipEntry.async('blob');
+      files.push({
+        name: filename,
+        blob: imageData,
+        extension: filename.split('.').pop().toLowerCase()
+      });
+    }
+  }
+  
+  return files;
+};
 
-export { importCSV, importCSV2, importExcel };
+export { importCSV, importCSV2, importExcel , extractZipFiles};
