@@ -25,25 +25,19 @@ const loginClient = async (email, password) => {
   return data;
 };
 
-const loginClientTemp = async (email, password) => {
-  const formData = new FormData();
-  formData.append('email', email);
-  formData.append('password', password);
-  formData.append('device_name', 'import');
-
-  const response = await fetch(`${API_BASE}/login`, {
-    method: 'POST',
-    body: formData,
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || 'Login failed');
-  }
-
-  return data.token || data.access_token;
-};
+// const loginClientTemp = async (email, password) => {
+//   const formData = new FormData();
+//   formData.append('email', email);
+//   formData.append('password', password);
+//   formData.append('device_name', 'import');
+//   const response = await fetch(`${API_BASE}/login`, {
+//     method: 'POST',
+//     body: formData,
+//   });
+//   const data = await response.json();
+//   if (!response.ok) {throw new Error(data.message || 'Login failed'); }
+//   return data.token || data.access_token;
+// };
 
 const logoutClient = async () => {
   const token = sessionStorage.getItem('customer_token');
@@ -58,10 +52,16 @@ const logoutClient = async () => {
     });
   }
   
+  const customer = JSON.parse(sessionStorage.getItem("customer_data"));
+
+  console.log("=== Logout ===");
+  console.log(`Nom : ${customer?.first_name}`);
+  console.log(`Email : ${customer?.email}`);
+
   sessionStorage.removeItem('customer_token');
   sessionStorage.removeItem('customer_data');
   
-  window.location.reload();
+  // window.location.reload();
 };
 
 const getCurrentCustomer = () => {
@@ -73,4 +73,4 @@ const isCustomerLoggedIn = () => {
   return sessionStorage.getItem('customer_token') !== null;
 };
 
-export { loginClient, logoutClient, getCurrentCustomer, isCustomerLoggedIn, loginClientTemp};
+export { loginClient, logoutClient, getCurrentCustomer, isCustomerLoggedIn};

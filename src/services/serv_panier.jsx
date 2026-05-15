@@ -37,6 +37,7 @@ const addToCart = async (productId, quantity = 1) => {
     method: 'POST',
     body: JSON.stringify(body),
   });
+  
 };
 
 const getCart = async () => {

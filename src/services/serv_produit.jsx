@@ -29,4 +29,6 @@ const getProduitById = async (id) => {
   return fetch_a(`${API_BASE_URL}/${id}`);
 };
 
+
+
 export {getProduits, getProduitById};

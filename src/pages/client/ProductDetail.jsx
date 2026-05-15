@@ -3,12 +3,16 @@ import { useParams } from 'react-router-dom';
 import { getProduitById } from '../../services/serv_produit';
 import { addToCart } from '../../services/serv_panier';
 import { isCustomerLoggedIn } from '../../services/serv_auth';
+
+import {getStockByProductId} from '../../services/serv_admin';
+
 import Toast from '../../components/Toast';
 
 function ProductDetail({ refreshCart }) {
   const { id } = useParams();
   const [produit, setProduit] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [stock, setStock] = useState(0);
   const [quantite, setQuantite] = useState(1);
   const [toast, setToast] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -17,7 +21,9 @@ function ProductDetail({ refreshCart }) {
     const fetchProduct = async () => {
       try {
         const data = await getProduitById(id);
+        const stockResult = await getStockByProductId(id);
         setProduit(data.data);
+        setStock(stockResult);
       } catch (error) {
         console.error(error);
       } finally {
@@ -108,7 +114,7 @@ function ProductDetail({ refreshCart }) {
           
           {/* Description */}
           <div dangerouslySetInnerHTML={{ __html: produit.description }} style={{ marginTop: '1rem' }} />
-          
+          <div>Qte dispo : {stock}</div>
           {/* Quantité et panier */}
           <div style={{ marginTop: '2rem' }}>
             <label>Quantité: </label>

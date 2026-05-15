@@ -4,12 +4,14 @@ import { createCustomer, createProduit, findOrCreateCategory } from '../../servi
 import { importCommandes } from '../../services/serv_admin';
 
 function Import() {
+
   const [fileClients, setFileClients] = useState(null);
+  const [fileProduits, setFileProduits] = useState(null);
   const [fileCommandes, setFileCommandes] = useState(null);
+
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-
-  const [fileProduits, setFileProduits] = useState(null);
+  const [errors, setErrors] = useState([]);
 
   const handleFileChange = (e, setFile) => {
     setFile(e.target.files[0]);
@@ -24,9 +26,11 @@ function Import() {
 
     setLoading(true);
     setMessage('');
+    setErrors([]);
 
     try {
       const data = await importCSV(fileClients);
+
       let successCount = 0;
       let errorCount = 0;
 
@@ -43,19 +47,28 @@ function Import() {
             password_confirmation: client.pwd,
           };
 
-          console.log(customerData);
-          
           await createCustomer(customerData);
           successCount++;
+
         } catch (err) {
           console.error('Erreur import client:', err);
+          const msg = err?.message || err?.errors?.password?.[0] || "Erreur inconnue";
+          setErrors(prev => [
+            ...prev,
+            `${client.email} : ${msg}`
+          ]);
           errorCount++;
         }
       }
 
+      localStorage.clear();
+      localStorage.setItem("clients", JSON.stringify(data));
+
       setMessage(`Import terminé: ${successCount} clients créés, ${errorCount} erreurs`);
-    } catch (error) {
-      setMessage(`Erreur: ${error.message}`);
+
+    } catch (err) {
+      console.error('Erreur globale import:', err);
+      setMessage(err.message || "Erreur inconnue");
     } finally {
       setLoading(false);
     }
@@ -73,7 +86,6 @@ function Import() {
 
       for (const produit of data) {
         try {
-
           let categoryId = null;
           if (produit.Categorie) {
             const category = await findOrCreateCategory(produit.Categorie);
@@ -103,15 +115,22 @@ function Import() {
             locale: 'fr',
             categories: categoryId ? [categoryId] : []
           };
+          
+          console.log("======= Produit creaction =======");
+          console.log("Donnee recu : ", produit);
 
           await createProduit(produitData);
           successCount++;
         } catch (err) {
           console.error('Erreur import produit:', err);
+          const msg = err?.message || "Erreur inconnue";
+          setErrors(prev => [
+            ...prev,
+            `${produit.name} : ${msg}`
+          ]);
           errorCount++;
         }
       }
-
       setMessage(`Import produits terminé: ${successCount} produits créés, ${errorCount} erreurs`);
     } catch (error) {
       setMessage(`Erreur: ${error.message}`);
@@ -125,22 +144,21 @@ function Import() {
       setMessage('Veuillez sélectionner un fichier commandes');
       return;
     }
-
     setLoading(true);
     setMessage('');
-
     try {
       const data = await importCSV(fileCommandes);
-
       const result = await importCommandes(data);
+      setMessage( `Import commandes terminé: ${result.success} OK, ${result.errors} erreurs`);
 
-      setMessage(
-        `Import commandes terminé: ${result.success} OK, ${result.errors} erreurs`
-      );
-
-    } catch (error) {
-      setMessage(`Erreur: ${error.message}`);
-    } finally {
+     } catch (error) {
+      // setMessage(`Erreur: ${error.message}`);
+      const msg = error?.message || "Erreur inconnue";
+      setErrors(prev => [
+        ...prev,
+        msg
+      ]);
+    }finally {
       setLoading(false);
     }
   };
@@ -157,6 +175,17 @@ function Import() {
           borderRadius: '4px'
         }}>
           {message}
+        </div>
+      )}
+
+      {errors.length > 0 && (
+        <div style={{ marginTop: "1rem", color: "red" }}>
+          <h4>Erreurs :</h4>
+          <ul>
+            {errors.map((e, i) => (
+              <li key={i}>{e}</li>
+            ))}
+          </ul>
         </div>
       )}
       

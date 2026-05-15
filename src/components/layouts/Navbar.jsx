@@ -8,7 +8,9 @@ import './Navbar.css';
 
 function Navbar({ panierCount, refreshCart }) {
   const navigate = useNavigate();
+
   const pathname = window.location.pathname;
+
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showPanier, setShowPanier] = useState(false);
   const [customer, setCustomer] = useState(getCurrentCustomer());
@@ -44,6 +46,7 @@ function Navbar({ panierCount, refreshCart }) {
     { path: '/admin/home', label: 'Home' },
     { path: '/admin/import', label: 'Import' },
     { path: '/admin/images', label: 'Images' },
+    { path: '/admin/stock', label: 'Stock' },
     { path: '/admin/commandes', label: 'Commandes' },
   ];
 

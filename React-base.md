@@ -1033,3 +1033,58 @@ const handleChargement = async () => {
 
 console.log("\n=== FIN DU RÉSUMÉ ===");
 ```
+
+# Appel des listes, utiliseeee map
+```javascript
+    {products.map((p) => (
+        <p key={p.id}>{p.name}</p>
+    ))}
+```
+
+# Formulaire
+```javascript
+    // state
+    const [formData, setFormData] = useState({
+    nom: '',
+    age: '',
+    date: '',
+    categorie: '',
+    });
+
+    /// Recuperer les valeurs
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,    // garde les anciens valeurs
+            [e.target.name]: e.target.value
+        });
+    };
+
+    /// Les inputs 
+    <input type="text" name="nom" value={formData.nom} onChange={handleChange} />
+
+    <input type="number" name="age" value={formData.age} onChange={handleChange} />
+
+    <input type="date" name="date" value={formData.date} onChange={handleChange} />
+
+    <select name="categorie" value={formData.categorie} onChange={handleChange} >
+        <option value="">Choisir</option>
+        <option value="pc">PC</option>
+        <option value="phone">Téléphone</option>
+    </select>
+
+    /// pour fichier
+    <input type="file" onChange={handleFileChange} />
+
+    const [file, setFile] = useState(null);
+    
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
+    };
+    
+    /// Submit
+    const handleSubmit = (e) => {
+        e.preventDefault();     // empêche le rechargement de la page.
+        console.log(formData);
+    };
+
+```

@@ -11,8 +11,8 @@ import AdminRoute from './components/admin/AdminRoute';
 import AdminHome from './pages/admin/Home';
 import AdminImport from './pages/admin/Import';
 import AdminImages from './pages/admin/Images';
+import AdminStock from './pages/admin/Stock';
 import AdminCommandes from './pages/admin/Commandes';
-
 
 import ClientHome from './pages/client/Home';
 import ClientCommandes from './pages/client/Commandes';
@@ -43,6 +43,18 @@ function App() {
 
   const refreshCart = () => { setRefreshKey(prev => prev + 1); };
 
+  window.addEventListener("storage", (event) => {
+    if (event.key === "force_logout") {
+      const adminLoggedIn = sessionStorage.getItem('admin_logged_in');
+      sessionStorage.clear();
+      localStorage.clear();
+      if (adminLoggedIn) {
+        sessionStorage.setItem('admin_logged_in', adminLoggedIn);
+      }
+      window.location.reload();
+    }
+  });
+
   return (
     <Router>
       <Layout panierCount={panierCount} refreshCart={refreshCart}>
@@ -53,6 +65,7 @@ function App() {
           <Route path="/admin/home" element={ <AdminRoute> <AdminHome /> </AdminRoute>} />
           <Route path="/admin/import" element={ <AdminRoute> <AdminImport /> </AdminRoute>} />
           <Route path="/admin/images" element={ <AdminRoute> <AdminImages /> </AdminRoute>} />
+          <Route path="/admin/stock" element={ <AdminRoute> <AdminStock /> </AdminRoute>} />
           <Route path="/admin/commandes" element={ <AdminRoute> <AdminCommandes /> </AdminRoute>} />
 
           <Route path="/client/home" element={<ClientHome refreshCart={refreshCart} />} />
