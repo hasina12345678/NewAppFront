@@ -13,9 +13,7 @@ const loginClient = async (email, password) => {
 
   const data = await response.json();
   
-  if (!response.ok) {
-    throw new Error(data.message || 'Login failed');
-  }
+  if (!response.ok) { throw new Error('Email ou mots de passe Invalide'); }
   
   if (data.token || data.access_token) {
     sessionStorage.setItem('customer_token', data.token || data.access_token);

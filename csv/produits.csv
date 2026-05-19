@@ -1,4 +1,25 @@
 type,sku,name,Categorie,prix_vente,prix_achat,prix_promo,stock_initial
-simple,sk-l,Laptop Lenovo IdeaPad 5,Ordinateur,600,500,520,10
-,sk-m,MacBook Air M5,Ordinateur,768,555,,5
-,sk-s,Samsung Galaxy S26,Telephone,466,300,350,2
+simple,sk-i17,Iphone 17,Telephone,6000,5000,5200,100
+simple,sk-i16,Iphone 16,Telephone,5000,4000,,100
+simple,sk-i16p,Iphone 16 Pro Max,Telephone,5500,5000,,100
+simple,sk-i15,Iphone 15,Telephone,5000,4000,,100
+simple,sk-i14,Iphone 14,Telephone,4000,3000,,100
+simple,sk-i13,Iphone 13,Telephone,3000,2000,2500,50
+simple,sk-so1,Souris Gamer 1,Souris,200,100,,50
+simple,sk-so2,Souris Gamer 2,Souris,300,100,,50
+simple,sk-so3,Souris Gamer 3,Souris,400,100,,50
+simple,sk-so4,Souris Gamer 4,Souris,500,100,,50
+simple,sk-so5,Souris Gamer 5,Souris,600,100,550,50
+simple,sk-c1,Clavier Electro 1,Clavier,400,300,350,70
+simple,sk-c2,Clavier Electro 2,Clavier,400,300,,70
+simple,sk-c3,Clavier Electro 3,Clavier,400,300,,70
+simple,sk-c4,Clavier Electro 4,Clavier,400,300,,70
+simple,sk-c5,Clavier Electro 5,Clavier,400,300,370,70
+simple,sk-c6,Clavier Electro 6,Clavier,400,300,,70
+simple,sk-c7,Clavier Electro 7,Clavier,400,300,,70
+simple,sk-s17,Samsung 17,Telephone,6000,5000,5200,10
+simple,sk-s16,Samsung 16,Telephone,5000,4000,,10
+simple,sk-s16p,Samsung 16 Pro Max,Telephone,5500,5000,,10
+simple,sk-s15,Samsung 15,Telephone,5000,4000,,10
+simple,sk-s14,Samsung 14,Telephone,4000,3000,,10
+simple,sk-s13,Samsung 13,Telephone,3000,2000,2500,10

@@ -1,0 +1,276 @@
+/* =========================
+   CARD
+========================= */
+
+.commande-card {
+  padding-left: 24px;
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+
+  margin-bottom: 15px;
+  background-color: var(--card-bg);
+  width: 80%;
+
+  display: flex;
+  flex-direction: column;
+  margin-left: 10%;
+
+  /* gap: 20px; */
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.commande-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  
+  /* gap: 20px; */
+}
+
+.commande-id {
+  /* margin-bottom: 8px; */
+
+  color: var(--title-color);
+}
+
+.commande-dates {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+}
+
+/* =========================
+   STATUS
+========================= */
+
+.commande-status {
+    margin-top: 24px;
+    margin-right: 24px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+}
+
+.status-pending {
+  background-color: #f39c12;
+}
+
+.status-processing {
+  background-color: #3498db;
+}
+
+.status-completed {
+  background-color: #2ecc71;
+}
+
+.status-cancelled {
+  background-color: #ef4444;
+}
+
+/* =========================
+   CLIENT
+========================= */
+
+.commande-client {
+  border-radius: 14px;
+  background-color: var(--bg-color);
+}
+
+/* =========================
+   TOTAL
+========================= */
+
+.commande-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* border-bottom: 1px solid var(--border-color); */
+}
+
+.commande-total strong {
+    font-size: var(--font-lg);
+    padding-right: 24px;
+    color: var(--title-color);
+}
+
+/* =========================
+   PRODUCTS
+========================= */
+
+.commande-products {
+  display: flex;
+  flex-direction: column;
+}
+
+.commande-products-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 14px;
+}
+
+.commande-product-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 14px;
+
+  padding-bottom: 4px;
+
+  /* border-bottom: 1px solid var(--border-color); */
+}
+
+.commande-product-left {
+  display: flex;
+  align-items: center;
+    
+  gap: 4px;
+  flex: 1; /* Ajoute ceci pour que le conteneur prenne toute la largeur disponible */
+  min-width: 0;
+}
+
+/* =========================
+   IMAGE
+========================= */
+
+.commande-product-image,
+.commande-product-no-image {
+  width: 70px;
+  height: 70px;
+
+  border-radius: 12px;
+
+  flex-shrink: 0;
+}
+
+.commande-product-image {
+  object-fit: cover;
+}
+
+.commande-product-no-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--border-color);
+
+  background-color: var(--bg-color);
+
+  color: var(--text-muted);
+}
+
+.commande-product-no-image svg {
+  width: 26px;
+  height: 26px;
+}
+
+/* =========================
+   INFO
+========================= */
+
+.commande-product-name {
+    color: var(--title-color);
+}
+
+.qte-cell {
+  text-align: right;
+  padding-left: 20px; /* Ajoute un espace entre le nom et la quantité */
+}
+
+.commande-product-price {
+  color: var(--title-color);
+  padding-right: 24px;
+}
+
+/* =========================
+   ACTIONS
+========================= */
+
+.commande-actions {
+  padding-top: 10px;
+
+  /* border-top: 1px solid var(--border-color); */
+}
+
+.commande-select-wrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 17px;
+  gap: 10px;
+}
+
+.commande-select {
+  padding: 10px 14px;
+
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+
+  background-color: var(--bg-color);
+  color: var(--text-color);
+
+  outline: none;
+}
+
+.commande-select:focus {
+  border-color: var(--primary-violet);
+}
+
+.commande-disabled {
+  color: var(--text-muted);
+}
+
+/* =========================
+   TOGGLE BUTTON
+========================= */
+
+.toggle-items-btn {
+  margin-top: 12px;
+  margin-bottom: 12px;
+  /* color: var(--bg-color); */
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.toggle-items-btn:hover {
+  background-color: none;
+}
+
+.toggle-icon {
+  transition: transform 0.3s ease;
+  color: var(--text-color);
+}
+
+.toggle-icon.open {
+  transform: rotate(180deg);
+}
+/* =========================
+   PRODUCTS WRAPPER
+========================= */
+
+/* animation simple */
+.commande-products-list {
+  animation: fadeItems 0.2s ease;
+}
+
+@keyframes fadeItems {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

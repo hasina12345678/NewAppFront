@@ -1,0 +1,52 @@
+/* =========================
+   PAGE
+========================= */
+
+.wishlist-page {
+  padding: 30px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.wishlist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 30px;
+}
+
+.wishlist-clear-btn {
+  background-color: #ef4444;
+}
+
+/* =========================
+   EMPTY
+========================= */
+
+.wishlist-empty {
+  padding: 40px;
+
+  /* border: 1px solid var(--border-color); */
+  border-radius: 16px;
+
+  background-color: var(--bg-color);
+
+  text-align: center;
+
+  color: var(--text-color);
+}
+
+/* =========================
+   GRID
+========================= */
+
+.wishlist-grid {
+  display: grid;
+
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+
+  gap: 20px;
+}

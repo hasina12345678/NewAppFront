@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { getOrders, createInvoice, createShipment } from '../../services/serv_admin';
 import CarteCommande from '../../components/CarteCommande';
+import './Commandes.css';
+
+import Loader from '../../components/Loader';
 
 function Commandes() {
   const [orders, setOrders] = useState([]);
@@ -46,7 +49,7 @@ function Commandes() {
         }
       }
       await loadOrders();
-      alert("Commande mise à jour");
+      // alert("Commande mise à jour");
 
     } catch (err) {
       console.error("Erreur update status :",err);
@@ -56,12 +59,14 @@ function Commandes() {
     }
   };
 
-  if (loading) return <div>Chargement commandes...</div>;
+  // if (loading) return <div>Chargement commandes...</div>;
+  if (loading) return <Loader />;
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className='commandes-page'>
       <h1>Gestion des commandes</h1>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      {orders.length === 0 && <p>Aucune commande</p>}
+      <div className='commandes'>
         {orders.map(order => (
           <CarteCommande
             key={order.id}

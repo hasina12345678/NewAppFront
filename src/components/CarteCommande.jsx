@@ -1,5 +1,9 @@
+import { useState } from 'react';
+import './CarteCommande.css';
+
 function CarteCommande({ commande, showActions = true, onStatusChange, updatingId = null }) {
-  
+  const [showItems, setShowItems] = useState(false);
+
   const getStatusLabel = (status) => {
     const labels = {
       'pending': 'En attente',
@@ -25,116 +29,117 @@ function CarteCommande({ commande, showActions = true, onStatusChange, updatingI
   const isDisabled = isCompleted || isCancelled;
 
   return (
-    <div
-      style={{
-        border: '1px solid #ddd',
-        borderRadius: '8px',
-        padding: '1rem',
-        backgroundColor: '#fff',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-      }}
-    >
-      {/* En-tête */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <div>
-          <strong>Commande #{commande.id}</strong>
-          <span style={{ marginLeft: '1rem', color: '#666', fontSize: '0.875rem' }}>
-            {new Date(commande.created_at).toLocaleDateString('fr-FR')}
-          </span>
+    <div className="commande-card">
+
+      <div className="commande-header">
+        <div className="commande-left">
+          <h3 className="commande-id"> Commande #{commande.id}</h3>
+          <div className="commande-dates">
+            {/* <span> UTC : {commande.created_at.replace('T', ' ').replace('Z', '').replace('.000000', '')} </span> */}
+            <span> <strong>Date :</strong> {new Date(commande.created_at).toLocaleString('fr-FR')}</span>
+          </div>
         </div>
-        <div>
-          <span
-            style={{
-              display: 'inline-block',
-              padding: '0.25rem 0.75rem',
-              borderRadius: '20px',
-              fontSize: '0.875rem',
-              backgroundColor: getStatusColor(commande.status),
-              color: 'white'
-            }}
-          >
-            {getStatusLabel(commande.status)}
-          </span>
-        </div>
+        <span className={`commande-status status-${commande.status}`}> {getStatusLabel(commande.status)}</span>
+      </div>  
+
+      <div className="commande-client">
+        <p> <strong>Client :</strong> {commande.customer_first_name} {' '} {commande.customer_last_name}</p>
+        <p> <strong>Email :</strong> {commande.customer_email} </p>
       </div>
 
-      {/* Client */}
-      <div style={{ marginBottom: '0.75rem', padding: '0.5rem', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
-        <strong>Client :</strong> {commande.customer_first_name} {commande.customer_last_name}<br />
-        <strong>Email :</strong> {commande.customer_email}
+      <div className="commande-total">
+        <span>Total :</span>
+        <strong> {Number(commande.grand_total)} €</strong>
       </div>
 
-      {/* Total */}
-      <div style={{ marginBottom: '0.75rem' }}>
-        <strong>Total :</strong> <span style={{ fontSize: '1.125rem', color: '#2c3e50' }}>{commande.grand_total} €</span>
-      </div>
-
-      {/* Produits */}
-      <div style={{ marginBottom: '1rem' }}>
-        <strong style={{ display: 'block', marginBottom: '0.5rem' }}>Produits :</strong>
-        <div style={{ borderTop: '1px solid #eee' }}>
-          {commande.items?.map((item) => (
-            <div
-              key={item.id}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '0.5rem 0',
-                borderBottom: '1px solid #eee'
-              }}
-            >
-              <div>
-                {item.name} x {item.qty_ordered}
-              </div>
-              <div style={{ fontWeight: 'bold' }}>
-                {(item.price * item.qty_ordered).toFixed(2)} €
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Actions */}
       {showActions && (
-        <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #eee' }}>
+        <div className="commande-actions">
           {isDisabled ? (
-            <span style={{ color: '#999' }}>
-              {isCompleted ? '✅ Commande terminée' : '❌ Commande annulée'}
+            <span className="commande-disabled">
+              {/* {isCompleted
+                ? 'Commande terminée'
+                : 'Commande annulée'
+              } */}
             </span>
           ) : (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <label>Changer statut :</label>
-              <select
-                value={commande.status}
-                disabled={updatingId === commande.id}
-                onChange={(e) => onStatusChange(commande, e.target.value)}
-                style={{
-                  padding: '0.5rem',
-                  borderRadius: '4px',
-                  border: '1px solid #ccc'
-                }}
+            <div className="commande-select-wrapper">
+              <label> Status : </label>
+
+              <select value={commande.status} disabled={updatingId === commande.id}
+                onChange={(e) =>
+                  onStatusChange(commande, e.target.value)
+                }
+                className="commande-select"
               >
                 {commande.status === 'pending' && (
                   <>
-                    <option value="pending">En attente</option>
-                    <option value="processing">En préparation</option>
-                    <option value="completed">Terminée</option>
+                    <option value="pending">  Pending </option>
+                    <option value="processing"> Processing </option>
+                    <option value="completed">Completed </option>
                   </>
                 )}
+
                 {commande.status === 'processing' && (
                   <>
-                    <option value="processing">En préparation</option>
-                    <option value="completed">Terminée</option>
+                    <option value="processing"> Processing </option>
+
+                    <option value="completed"> Completed</option>
                   </>
                 )}
+
               </select>
-              {updatingId === commande.id && <span>Mise à jour...</span>}
+
+              {updatingId === commande.id && (
+                <span> Mise à jour... </span>
+              )}
             </div>
           )}
         </div>
       )}
+
+      {/* Produits */}
+      <div className="commande-products">
+
+        <button type="button" className="toggle-items-btn" onClick={() => setShowItems(!showItems)}>
+          <svg className={`toggle-icon ${showItems ? 'open' : ''}`} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+
+        {showItems && (
+          <div className="commande-products-list">
+            {commande.items?.map((item) => (
+              <div key={item.id} className="commande-product-item">
+                <div className="commande-product-left">
+                  {item.product?.images?.[0]?.small_image_url ? (
+                    <img src={item.product.images[0].small_image_url} alt={item.name} className="commande-product-image" />
+                  ) : (
+                    <div className="commande-no-image">
+                      <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M4 5h16v14H4z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+                        <path d="M4 16l4-4 3 3 5-5 4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <circle cx="9" cy="9" r="1.5" fill="currentColor" />
+                      </svg>
+                    </div>
+                  )}
+
+                  <div className="commande-product-info">
+                    <div className="commande-product-name">{item.name}</div>
+                    <div className="commande-product-qte">Qté : {item.qty_ordered}</div>
+                  </div>
+
+                </div>
+
+                <div className="commande-product-price"> {(item.price * item.qty_ordered)} € </div>
+
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
+
 }
 
 export default CarteCommande;

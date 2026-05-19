@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
+
 import { getCart } from './services/serv_panier';
 import { isCustomerLoggedIn } from './services/serv_auth';
 
@@ -56,27 +57,28 @@ function App() {
   });
 
   return (
-    <Router>
-      <Layout panierCount={panierCount} refreshCart={refreshCart}>
-        <Routes>
-          <Route path="/" element={<Navigate to="/client/home" replace />} />
+      <Router>
+        <Layout panierCount={panierCount} refreshCart={refreshCart}>
+          <Routes>
+            <Route path="/" element={<Navigate to="/client/home" replace />} />
 
-          <Route path="/admin" element={<Login />} />
-          <Route path="/admin/home" element={ <AdminRoute> <AdminHome /> </AdminRoute>} />
-          <Route path="/admin/import" element={ <AdminRoute> <AdminImport /> </AdminRoute>} />
-          <Route path="/admin/images" element={ <AdminRoute> <AdminImages /> </AdminRoute>} />
-          <Route path="/admin/stock" element={ <AdminRoute> <AdminStock /> </AdminRoute>} />
-          <Route path="/admin/commandes" element={ <AdminRoute> <AdminCommandes /> </AdminRoute>} />
+            <Route path="/admin" element={<Login />} />
+            <Route path="/admin/home" element={ <AdminRoute> <AdminHome /> </AdminRoute>} />
+            <Route path="/admin/import" element={ <AdminRoute> <AdminImport /> </AdminRoute>} />
+            <Route path="/admin/images" element={ <AdminRoute> <AdminImages /> </AdminRoute>} />
+            <Route path="/admin/stock" element={ <AdminRoute> <AdminStock /> </AdminRoute>} />
+            <Route path="/admin/commandes" element={ <AdminRoute> <AdminCommandes /> </AdminRoute>} />
 
-          <Route path="/client/home" element={<ClientHome refreshCart={refreshCart} />} />
-          <Route path="/client/commandes" element={<ClientCommandes />} />
-          <Route path="/client/wishlist" element={<Wishlist refreshCart={refreshCart} />} />
+            <Route path="/client/home" element={<ClientHome refreshCart={refreshCart} />} />
+            <Route path="/client/commandes" element={<ClientCommandes />} />
+            <Route path="/client/wishlist" element={<Wishlist refreshCart={refreshCart} />} />
 
-          <Route path="/client/produit/:id" element={<ProductDetail refreshCart={refreshCart} />} />
+            <Route path="/client/produit/:id" element={<ProductDetail refreshCart={refreshCart} />} />
 
-        </Routes>
-      </Layout>
-    </Router>
+          </Routes>
+          
+        </Layout>
+      </Router>
   );
 }
 

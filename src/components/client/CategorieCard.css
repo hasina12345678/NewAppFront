@@ -1,0 +1,43 @@
+.categorie-card {
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+
+  background-color: var(--bg-color);
+
+  cursor: pointer;
+
+  width: 100%;
+
+  transition: 0.2s ease;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+}
+
+.categorie-card.active {
+  background: var(--violet-light);
+}
+
+.categorie-card:hover {
+  border-color: var(--primary-violet);
+  transform: translateY(-2px);
+}
+
+.categorie-id {
+  margin-bottom: 6px;
+
+  font-size: var(--font-sm);
+
+  color: var(--subtitle-color);
+}
+
+.categorie-name {
+  color: var(--title-color);
+
+  font-size: var(--font-md);
+}

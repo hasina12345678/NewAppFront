@@ -10,7 +10,7 @@ function Layout({ children, panierCount, refreshCart }) {
 
       {!hideNavbar && <Navbar panierCount={panierCount} refreshCart={refreshCart} />}
 
-      <main className="main-content">
+      <main className="app-container">
         {children}
       </main>
 

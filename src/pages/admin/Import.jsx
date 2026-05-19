@@ -3,6 +3,8 @@ import { importCSV } from '../../services/serv_import';
 import { createCustomer, createProduit, findOrCreateCategory } from '../../services/serv_admin';
 import { importCommandes } from '../../services/serv_admin';
 
+import './Import.css';
+
 function Import() {
 
   const [fileClients, setFileClients] = useState(null);
@@ -30,6 +32,18 @@ function Import() {
 
     try {
       const data = await importCSV(fileClients);
+
+      const requiredColumns_Client = ["nom", "prenom", "email", "pwd"];
+      const fileColumns = Object.keys(data[0] || {})
+                          .map(col => col.trim().toLowerCase());
+
+      const missingColumns = requiredColumns_Client.filter( (col) => !fileColumns.includes(col) );
+
+      if (missingColumns.length > 0) {
+        setMessage( `Colonnes manquantes : ${missingColumns.join(", ")}` );
+        setLoading(false);
+        return;
+      }
 
       let successCount = 0;
       let errorCount = 0;
@@ -81,6 +95,20 @@ function Import() {
 
     try {
       const data = await importCSV(fileProduits);
+
+      const requiredColumns_Products = ["type", "sku", "categorie", "prix_vente", "prix_achat", "prix_promo", "prix_vente", "stock_initial"];
+      
+      const fileColumns = Object.keys(data[0] || {})
+                          .map(col => col.trim().toLowerCase());
+
+      const missingColumns = requiredColumns_Products.filter( (col) => !fileColumns.includes(col) );
+
+      if (missingColumns.length > 0) {
+        setMessage( `Colonnes manquantes : ${missingColumns.join(", ")}` );
+        setLoading(false);
+        return;
+      }
+
       let successCount = 0;
       let errorCount = 0;
 
@@ -95,7 +123,6 @@ function Import() {
           const produitData = {
             type: 'simple',
             attribute_family_id: 1,
-            // sku: `${produit.sku}-${Date.now()}`,
             sku: produit.sku,
             name: produit.name,
             url_key: `${produit.sku}-${Date.now()}`.toLowerCase(),
@@ -116,7 +143,8 @@ function Import() {
             categories: categoryId ? [categoryId] : []
           };
           
-          console.log("======= Produit creaction =======");
+          console.log("\n");
+          console.log("============================ Produit creaction ============================");
           console.log("Donnee recu : ", produit);
 
           await createProduit(produitData);
@@ -148,6 +176,20 @@ function Import() {
     setMessage('');
     try {
       const data = await importCSV(fileCommandes);
+
+      const requiredColumns_Commandes = ["date", "heure", "client", "achat", "status"];
+      
+      const fileColumns = Object.keys(data[0] || {})
+                          .map(col => col.trim().toLowerCase());
+
+      const missingColumns = requiredColumns_Commandes.filter( (col) => !fileColumns.includes(col) );
+
+      if (missingColumns.length > 0) {
+        setMessage( `Colonnes manquantes : ${missingColumns.join(", ")}` );
+        setLoading(false);
+        return;
+      }
+
       const result = await importCommandes(data);
       setMessage( `Import commandes terminé: ${result.success} OK, ${result.errors} erreurs`);
 
@@ -170,6 +212,7 @@ function Import() {
       {message && (
         <div style={{ 
           padding: '1rem', 
+          marginTop: '1rem', 
           marginBottom: '1rem', 
           backgroundColor: message.includes('erreur') ? '#ffcccc' : '#ccffcc',
           borderRadius: '4px'
@@ -179,7 +222,7 @@ function Import() {
       )}
 
       {errors.length > 0 && (
-        <div style={{ marginTop: "1rem", color: "red" }}>
+        <div style={{ marginTop: "2rem", color: "red" }}>
           <h4>Erreurs :</h4>
           <ul>
             {errors.map((e, i) => (
@@ -189,7 +232,7 @@ function Import() {
         </div>
       )}
       
-      <div style={{ marginBottom: '2rem', border: '1px solid #ccc', padding: '1rem', borderRadius: '8px' }}>
+      <div className='import-clients'>
         <label>Fichier Clients (.csv)</label>
         <br />
         <input 
@@ -207,7 +250,7 @@ function Import() {
         </button>
       </div>
 
-      <div style={{ marginBottom: '2rem', border: '1px solid #ccc', padding: '1rem', borderRadius: '8px' }}>
+      <div className='import-produits'>
         <label>Fichier Produits (.csv)</label>
         <br />
         <input 
@@ -225,7 +268,7 @@ function Import() {
         </button>
       </div>
 
-      <div style={{ marginBottom: '2rem', border: '1px solid #ccc', padding: '1rem', borderRadius: '8px' }}>
+      <div className='import-commandes'>
         <label>Fichier Commandes (.csv)</label>
         <br />
         <input 

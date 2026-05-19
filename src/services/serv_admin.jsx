@@ -1,5 +1,5 @@
 import {saveAddress, saveShipping, savePayment, saveOrder} from './serv_checkout';
-import { addToCart } from './serv_panier';
+import { addToCart, getCart } from './serv_panier';
 import { loginClient , logoutClient} from './serv_auth';
 
 const CUSTOMER_API = 'http://localhost:8000/api/v1/admin/customers';
@@ -9,7 +9,7 @@ const API_CATEGORIES_URL = 'http://localhost:8000/api/v1/admin/catalog/categorie
 const API_ORDERS_URL = 'http://localhost:8000/api/v1/admin/sales/orders';
 const API_CART_URL = 'http://localhost:8000/api/v1/customer/cart';
 
-const token_admin = "Bearer 139|peB8hvzJzjwhUDNQfO2Bc8DH7zmHVbkQojbuQqte64e0d69d"
+const token_admin = "Bearer 168|SitUP6IBuxZXuWYglFaF7F0F2B55InOEnYrCOG2u563f7b26"
 
 const fetchWithAuth = async (url, options = {}) => {
   const response = await fetch(url, {
@@ -166,6 +166,12 @@ const getProduitById = async (id) => {
 };
 
 const createProduit = async (produitData) => {
+  validatePrice(produitData.price);
+  validatePrice(produitData.cost);
+  validatePrice(produitData.special_price);
+
+  if (produitData.stock_initial < 0) {throw new Error('Qte pour le stock initial doit etre positif');}
+
   const response = await fetch(API_PRODUCTS_URL, {
     method: 'POST',
     headers: {
@@ -197,10 +203,6 @@ const updateProduit = async (productId, produitData) => {
   formData.append('sku',produitData.sku);
   formData.append('name',produitData.name);
   formData.append('url_key',produitData.url_key);
-
-  validatePrice(produitData.price);
-  validatePrice(produitData.cost);
-  validatePrice(produitData.special_price);
 
   formData.append('price',String(produitData.price || 0));
   formData.append('cost',String(produitData.cost || 0));
@@ -330,107 +332,44 @@ const viderTousProduits = async () => {
 };
 
 // ============ COMMANDES ============
-// const importCommandes = async (commandes) => {
-//   let success = 0;
-//   let errors = 0;
-//   let index = 1;
-  
-//   const users = JSON.parse(localStorage.getItem("clients")) || [];
-//   if (users.length === 0) { throw new Error("Aucun client importé"); }
 
-//   for (const cmd of commandes) {
-//     try {
-//       console.log(`======= Commande creation ${index} =======`);
-//       console.log("=== donnee recu ===");
-//       console.log(cmd);
+const updateCommandeDate = async (orderId, date, heure) => {
+  const response = await fetch(
+    'http://localhost:3000/commande/update',
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ orderId, date, heure})
+    }
+  );
+  const data = await response.json();
+  if (!response.ok) { throw new Error(data.error || 'Erreur update commande'); }
+  return data;
+};
 
-//       validateDate(cmd.date);
+const updatePanierDate = async (cartId, date, heure) => {
+  const response = await fetch(
+    'http://localhost:3000/panier/update',
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ cartId, date, heure})
+    }
+  );
+  const data = await response.json();
+  if (!response.ok) { throw new Error(data.error || 'Erreur update commande'); }
+  return data;
+};
 
-//       const user = users.find(u => u.email === cmd.client);
-//       if (!user) { throw new Error(`Client introuvable : ${cmd.client}`);}
-
-//       await loginClient(user.email, user?.pwd || "1234567890");  
-     
-//       let achatStr = cmd.achat.replaceAll('{', '').replaceAll('}', '').trim();
-      
-//       const itemsStr = achatStr.split('],[');   // separer les produits: ["sk-l";3],["sk-m";2] -> [ ["sk-l";3], ["sk-m";2] ]
-//       const items = [];
-
-//       for (let itemStr of itemsStr) {
-//         itemStr = itemStr.replaceAll('[', '').replaceAll(']', '');  // Nettoyer les crochets
-//         const [sku, qty] = itemStr.split(';');
-//         items.push([sku.trim(), parseInt(qty.trim())]);
-//       }
-
-//       for (const [sku, qty] of items) {
-//         const productId = await getProductIdBySku(sku.trim());
-//         console.log("=== add to cart ...===");
-//         await addToCart(productId, qty);
-//       }
-      
-//       await saveAddress({
-//         billing: {
-//           first_name: user.prenom,
-//           last_name: user.nom,
-//           email: user.email,
-//           address: user?.address || [`${user?.prenom} address`],
-//           city: "Antananarivo",
-//           country: "MG",
-//           state: "Analamanga",
-//           postcode: "102",
-//           phone: user?.phone || "0380000000"
-//         },
-//         shipping: {
-//           first_name: user.prenom,
-//           last_name: user.nom,
-//           email: cmd.client,
-//           address: user?.address || [`${user?.prenom} address`],
-//           city: "Antananarivo",
-//           country: "MG",
-//           state: "Analamanga",
-//           postcode: "102",
-//           phone: user?.phone || "0380000000"
-//         }
-//       });
-
-//       const shippingResult = await saveShipping("free_free");   console.log("Shipping:", shippingResult);
-//       const paymentResult = await savePayment("cashondelivery");  console.log("Payment:", paymentResult);
-
-//       const orderResponse = await saveOrder();
-
-//       const order = orderResponse.data?.order || orderResponse.data?.[0]?.order || orderResponse.data;
-
-//       if (!order) {throw new Error("Commande introuvable");}
-//       if (!order.id) {throw new Error("Commande ID introuvable");}
-//       if (!order.items || !Array.isArray(order.items)) {throw new Error("Items commande introuvables");}
-
-//       console.log("=== Commande final cree ====");
-//       console.log(order);
-
-//       if (cmd.status?.toLowerCase() === 'processing') {   // STATUS = processing
-//         await createInvoice(order);
-//       }
-
-//       if (cmd.status?.toLowerCase() === 'completed') {  // STATUS = completed
-//         await createInvoice(order);
-//         await createShipment(order);
-//       }
-
-//       // logoutClient();
-//       sessionStorage.removeItem('customer_token');
-//       sessionStorage.removeItem('customer_data');
-
-//       success++;
-//     } catch (err) {
-//       // console.error("Erreur commande:", err.message);
-//       throw err;
-//       errors++;
-//     }
-//     index++;
-//   }
-//   // localStorage.clear();
-//   return { success, errors };
-// };
+const getCommandeById = async (orderId) => {
+   return fetchWithAuth(`${API_ORDERS_URL}/${orderId}`);
+}
 
 const importCommandes = async (commandes) => {
   let success = 0;
@@ -442,7 +381,8 @@ const importCommandes = async (commandes) => {
 
   for (const cmd of commandes) {
     try {
-      console.log(`======= Commande ${index} =======`);
+      console.log("\n");
+      console.log(`========================================== Commande ${index} ==========================================`);
       console.log(cmd);
 
       // 1. Validation date
@@ -469,9 +409,16 @@ const importCommandes = async (commandes) => {
       // 5. Add to cart
       for (const [sku, qty] of items) {
         const productId = await getProductIdBySku(sku);
-        console.log("=== Add to cart ... ===");
+        console.log("=== Add to cart ===");
+        console.log("--- product Id : ", productId, " --- qty : ", qty);
+
         await addToCart(productId, qty);
       }
+      const cartCreated = await getCart();
+      await updatePanierDate( cartCreated.data.id, cmd.date, cmd.heure);
+
+      const cartFinal = await getCart();
+      console.log("--- Panier final : ", cartFinal);
 
       // 6. Address
       await saveAddress({
@@ -505,9 +452,17 @@ const importCommandes = async (commandes) => {
 
       const orderResponse = await saveOrder();
 
-      const order =orderResponse.data?.order || orderResponse.data?.[0]?.order || orderResponse.data;
+      console.log("=== Commande cree ===");
+      console.log(orderResponse);
+
+      const order = orderResponse.data.order;
 
       if (!order?.id) throw new Error("Commande invalide");
+
+      // update Datyy et heure
+      const updateDateResponse = await updateCommandeDate( order.id, cmd.date, cmd.heure);
+      console.log("=== Update date & heure ===");
+      console.log(updateDateResponse);
 
       // 8. Status
       const status = cmd.status?.toLowerCase();
@@ -526,6 +481,9 @@ const importCommandes = async (commandes) => {
       sessionStorage.removeItem("customer_data");
 
       success++;
+      const cmdFinal = await getCommandeById(order.id);
+      console.log("Commande final : ", cmdFinal.data);
+
       console.log(`============= ✔ Commande ${index} OK ===============`);
 
     } catch (err) {
@@ -670,32 +628,64 @@ const deleteOrderById = async (id) => {
   }
 };
 
-
 const resetAllData = async () => {
-  const response = await fetch(
-    'http://localhost:8000/admin/reset-all-data',
-    {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json'
-        // 'Authorization': token_admin,
-      },
-    }
-  );
-  const data = await response.json();
-  if (!response.ok) { throw new Error(data.message || 'Erreur reset'); }
+  try {
+    const response = await fetch(
+      'http://localhost:3000/reset-all-data',
+      {
+        method: 'DELETE',
+        headers: {
+          'Accept': 'application/json'
+        },
+      }
+    );
 
-  const adminLoggedIn = sessionStorage.getItem('admin_logged_in');
+    const data = await response.json();
+    if (!response.ok) { throw new Error('Erreur reset'); }
+
+    const adminLoggedIn = sessionStorage.getItem('admin_logged_in');
+    
+    sessionStorage.clear();
+    localStorage.clear();
+
+    localStorage.setItem("force_logout", Date.now());
+
+    if (adminLoggedIn) { sessionStorage.setItem('admin_logged_in', adminLoggedIn); }
+
+    return data;
+
+  } catch (error) {
+    throw new Error('Serveur localhost:3000 non lancé');
+  }
+
   
-  sessionStorage.clear();
-  localStorage.clear();
-
-  localStorage.setItem("force_logout", Date.now());
-
-  if (adminLoggedIn) { sessionStorage.setItem('admin_logged_in', adminLoggedIn); }
-
-  return data;
 };
+
+// const resetAllData = async () => {
+//   const response = await fetch(
+//     'http://localhost:8000/admin/reset-all-data',
+//     {
+//       method: 'DELETE',
+//       headers: {
+//         'Accept': 'application/json'
+//         // 'Authorization': token_admin,
+//       },
+//     }
+//   );
+//   const data = await response.json();
+//   if (!response.ok) { throw new Error(data.message || 'Erreur reset'); }
+
+//   const adminLoggedIn = sessionStorage.getItem('admin_logged_in');
+  
+//   sessionStorage.clear();
+//   localStorage.clear();
+
+//   localStorage.setItem("force_logout", Date.now());
+
+//   if (adminLoggedIn) { sessionStorage.setItem('admin_logged_in', adminLoggedIn); }
+
+//   return data;
+// };
 
 export {
   getProduits,

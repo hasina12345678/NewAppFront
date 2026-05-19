@@ -1,0 +1,240 @@
+/* =========================
+   PAGE
+========================= */
+
+.stock-page {
+  padding: 30px;
+}
+
+/* =========================
+   GRID
+========================= */
+
+.stock-grid {
+  display: grid;
+
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  margin-top: 30px;
+  gap: 20px;
+}
+
+
+.stock-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stock-switch-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+
+  background: var(--primary-violet);
+  color: white;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.stock-switch-btn:hover {
+  opacity: 0.9;
+}
+
+/* =========================
+   CARD
+========================= */
+
+.stock-card {
+  padding: 18px;
+
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+
+  background-color: var(--bg-color);
+
+  transition: 0.2s ease;
+}
+
+.stock-card:hover {
+  border-color: var(--primary-violet);
+
+  transform: translateY(-3px);
+}
+
+
+
+/* =========================
+   IMAGE
+========================= */
+
+.stock-image-wrapper {
+  width: 100%;
+  height: 220px;
+
+  margin-bottom: 14px;
+}
+
+.stock-image,
+.stock-no-image {
+  width: 100%;
+  height: 100%;
+
+  border-radius: 12px;
+
+  overflow: hidden;
+}
+
+.stock-image {
+  object-fit: cover;
+}
+
+.stock-no-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--hover-bg);
+
+  color: var(--text-color);
+}
+
+.stock-no-image svg {
+  width: 50px;
+  height: 50px;
+}
+
+/* =========================
+   INFOS
+========================= */
+
+.stock-info {
+  margin-bottom: 16px;
+}
+
+.stock-product-name {
+  margin-bottom: 8px;
+
+  color: var(--title-color);
+
+  font-size: var(--font-md);
+}
+
+.stock-price,
+.stock-qty {
+  margin-bottom: 6px;
+
+  color: var(--text-color);
+
+  font-size: var(--font-sm);
+}
+
+/* =========================
+   ACTIONS
+========================= */
+
+.stock-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.stock-input {
+  flex: 1;
+
+  padding: 10px;
+
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+
+  background-color: var(--bg-color);
+
+  color: var(--text-color);
+    width: 5%;
+  box-sizing: border-box;
+}
+
+.stock-btn {
+  white-space: nowrap;
+}
+
+
+
+/* =========================
+   TABLE CONTAINER
+========================= */
+
+.stock-list-table {
+  margin-top: 30px;
+
+  overflow-x: auto;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.stock-list-table table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  background-color: var(--bg-color);
+
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+
+  overflow: hidden;
+}
+
+/* =========================
+   HEAD
+========================= */
+
+.stock-list-table thead {
+  background-color: var(--hover-bg);
+}
+
+.stock-list-table th {
+  padding: 16px;
+
+  text-align: left;
+
+  color: var(--title-color);
+
+  font-size: var(--font-sm);
+  font-weight: 600;
+
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* =========================
+   BODY
+========================= */
+
+.stock-list-table td {
+  padding: 14px 16px;
+
+  color: var(--text-color);
+
+  font-size: var(--font-sm);
+
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* =========================
+   ROW EFFECT
+========================= */
+
+.stock-list-table tbody tr {
+  transition: 0.2s ease;
+}
+
+.stock-list-table tbody tr:hover {
+  background-color: var(--hover-bg);
+}
+
+/* dernière ligne */
+.stock-list-table tbody tr:last-child td {
+  border-bottom: none;
+}

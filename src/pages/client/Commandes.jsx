@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import { getOrders } from '../../services/serv_commandes';
 import CarteCommande from '../../components/CarteCommande';
 
+import Loader from '../../components/Loader';
+
+import './Commande.css';
+
 function CommandesClient() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,12 +24,13 @@ function CommandesClient() {
     loadOrders();
   }, []);
 
-  if (loading) return <div>Chargement...</div>;
+  // if (loading) return <div>Chargement...</div>;
+  if (loading) return <Loader />;
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className='commande-page'>
       <h1>Mes commandes</h1>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div className='commandes'>
         {orders.map(order => (
           <CarteCommande
             key={order.id}

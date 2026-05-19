@@ -2,13 +2,16 @@ import { useState, useEffect } from 'react';
 import { getCart, updateCartItem, removeCartItem } from '../../services/serv_panier';
 import CheckoutModal from './CheckoutModal';
 
-import Toast from '../Toast';
+import './PanierOverlay.css';
+
+import { useNotify } from "../../context/NotificationContext";
 
 function PanierOverlay({ onClose, onRefresh }) {
     const [localItems, setLocalItems] = useState([]);
     const [showCheckout, setShowCheckout] = useState(false);
     const [disabledButtons, setDisabledButtons] = useState({});
-    const [toast, setToast] = useState(null);
+
+    const { notify } = useNotify();
 
     useEffect(() => {
         chargerPanier();
@@ -36,8 +39,7 @@ function PanierOverlay({ onClose, onRefresh }) {
         } catch (error) {
             chargerPanier();
             setDisabledButtons(prev => ({ ...prev, [itemId]: true }));
-            setToast({ message: 'Stock insuffisant', type: 'error' });
-            setTimeout(() => setToast(null), 2000);
+            notify("Stock insuffisant", "error");
         }
     };
 
@@ -61,65 +63,109 @@ function PanierOverlay({ onClose, onRefresh }) {
 
     return (
         <>
-            <div style={{
-                position: 'fixed', top: 0, right: 0, bottom: 0, left: 0,
-                backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000,
-                display: 'flex', justifyContent: 'flex-end',
-            }}>
-                <div style={{
-                    width: '500px', backgroundColor: 'white', height: '100%',
-                    padding: '20px', overflow: 'auto'
-                }}>
-                    <h2>Mon panier</h2>
-                    <button onClick={onClose}>Fermer</button>
+        <div className="cart-overlay">
 
-                    {localItems.length === 0 ? (
-                        <p>Panier vide</p>
-                    ) : (
-                        <>
-                            {localItems.map(item => (
-                                <div key={item.id} style={{ borderBottom: '1px solid #ccc', padding: '10px', display: 'flex', gap: '10px' }}>
-                                    <img src={item.product?.images?.[0]?.small_image_url} alt="" width="50" />
-                                    <div style={{ flex: 1 }}>
-                                        <h4>{item.product?.name}</h4>
-                                        <p>{item.price}€ x {item.quantity} = {(item.price * item.quantity).toFixed(2)}€</p>
-                                        <div>
-                                            <button onClick={() => handleUpdateQuantite(item.id, item.quantity - 1)}>-</button>
-                                            <span style={{ margin: '0 10px' }}>{item.quantity}</span>
-                                            <button onClick={() => handleUpdateQuantite(item.id, item.quantity + 1)} disabled={disabledButtons[item.id]}>+</button>
-                                            <button onClick={() => handleSupprimer(item.id)} style={{ marginLeft: '10px', color: 'red' }}>Supprimer</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                            <div style={{ marginTop: '20px' }}>
-                                <strong>Total: {total.toFixed(2)}€</strong>
-                            </div>
-                            <button 
-                                onClick={handleValidationClick}
-                                style={{ 
-                                    marginTop: '20px', 
-                                    backgroundColor: '#4caf50', 
-                                    color: 'white', 
-                                    padding: '12px', 
-                                    width: '100%',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                Valider la commande
-                            </button>
-                        </>
-                    )}
+            <div className="cart-panel">
+
+                <div className="cart-header">
+                    <h2>Mon panier</h2>
+                    <button onClick={onClose} className="close-cart-btn">
+                        X
+                    </button>
                 </div>
+
+                {localItems.length === 0 ? (
+                <p className="cart-empty">Panier vide</p>
+                ) : (
+                <>
+                    <div className="cart-items">
+
+                    {localItems.map(item => (
+                        <div key={item.id} className="cart-item">
+
+                        <div className="cart-image-wrapper">
+                            {item.product?.images?.[0]?.small_image_url ? (
+                                <img src={item.product.images[0].small_image_url} alt="" className="cart-img" />
+                            ) : (
+                                <div className="cart-no-image">
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M4 5h16v14H4z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+                                        <path d="M4 16l4-4 3 3 5-5 4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                        <circle cx="9" cy="9" r="1.5" fill="currentColor" />
+                                    </svg>
+                                </div>
+                            )}
+
+                        </div>
+
+                        <div className="cart-info">
+
+                            <h4 className="cart-name">
+                            {item.product?.name}
+                            </h4>
+
+                            <p className="cart-price">
+                            {Number(item.price)} € x {item.quantity} = {(item.price * item.quantity)} €
+                            </p>
+
+                            <div className="cart-actions">
+
+                            <button
+                                onClick={() => handleUpdateQuantite(item.id, item.quantity - 1)}
+                                className="qty-btn"
+                            >-</button>
+
+                            <input
+                                type="number"
+                                value={item.quantity}
+                                onChange={(e) =>
+                                    handleUpdateQuantite(item.id, Number(e.target.value))
+                                }
+                                min={1}
+                                className="cart-qty-input"
+                            />
+
+                            <button
+                                onClick={() => handleUpdateQuantite(item.id, item.quantity + 1)}
+                                disabled={disabledButtons[item.id]}
+                                className="qty-btn"
+                            >+</button>
+
+                            <button
+                                onClick={() => handleSupprimer(item.id)}
+                                className="delete-btn"
+                            > x </button>
+
+                            </div>
+
+                        </div>
+
+                        </div>
+                    ))}
+
+                    </div>
+
+                    <div className="cart-footer">
+
+                        <strong>Total: {total} € </strong>
+
+                        <button onClick={handleValidationClick} className="checkout-btn"> Valider la commande</button>
+
+                    </div>
+                </>
+                )}
+
             </div>
 
+        </div>
+
             {showCheckout && (
-                <CheckoutModal onClose={() => setShowCheckout(false)} onSuccess={handleCheckoutSuccess} />
+            <CheckoutModal
+                onClose={() => setShowCheckout(false)}
+                onSuccess={handleCheckoutSuccess}
+            />
             )}
 
-            {toast && <Toast {...toast} onClose={() => setToast(null)} />}
         </>
     );
 }

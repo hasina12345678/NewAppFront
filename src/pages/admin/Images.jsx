@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { extractZipFiles } from '../../services/serv_import';
 import { getProductIdBySku, updateProduit, getProduitById } from '../../services/serv_admin';
 
+import './Images.css';
+
 function Images() {
   const [fileImages, setFileImages] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -75,7 +77,7 @@ function Images() {
           await updateProduit(product_id, {
             ...productData.data,
 
-            categories: productData.data.categories
+            categories: productData.data.categories // afaka tsy eo tsouni ngamba
               ? productData.data.categories.map(cat => cat.id)
               : [],
 
@@ -112,7 +114,7 @@ function Images() {
         </div>
       )}
       
-      <div style={{ marginBottom: '2rem', border: '1px solid #ccc', padding: '1rem', borderRadius: '8px' }}>
+      <div className='import-images'>
         <label>Fichier Images (.zip)</label>
         <br />
         <input 

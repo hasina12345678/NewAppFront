@@ -1,8 +1,12 @@
-function CategorieCard({ categorie, onSelect }) {
+import './CategorieCard.css';
+
+function CategorieCard({ categorie, onSelect, isActive }) {
+
   return (
-    <div onClick={() => onSelect(categorie.id)} style={{ cursor: 'pointer' }}>
-      <p>Id : {categorie.id}</p>
-      <p>Nom {categorie.name}</p>
+    <div className={`categorie-card ${isActive ? 'active' : ''}`} onClick={() => onSelect(categorie.id)}>
+      {/* <p className="categorie-id"> #{categorie.id} </p> */}
+      <h3 className="categorie-name">{categorie.name} </h3>
+        
     </div>
   );
 }
